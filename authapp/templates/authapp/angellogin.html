@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Angel Login</h4>
+<br>
+<div class="row">
+    {% if res %}
+    <p style="color: red">
+        {{res}}
+    </p>
+    {% endif %}
+<form action="/angellogin/" method="post" style="width: -webkit-fill-available;">
+    {% csrf_token %}
+    <label for="clientid">Client Id: </label>
+    <input id="clientid" type="text" name="clientid" value="">
+    <br>
+    <label for="password">Password: </label>
+    <input id="password" type="text" name="password" value="">
+    <br>
+    <input type="submit" value="Login">
+</form>
+</div>
+<hr>
+{% endblock content %}

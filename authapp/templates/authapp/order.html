@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock title %}
+{% block content %}
+<h1>Order Buy/Sell Stock</h1>
+<br>
+<a style="font-size: 25px">Clint Code : {{data.client_code}}</a>
+<br>
+<a style="font-size: 25px">Angel Account Name : {{data.angelname}}</a>
+<hr>
+
+<form action="/order/" method="post" style="width: -webkit-fill-available;">
+    {% csrf_token %}
+
+    <input type="text" name="tags" PLACEHOLDER="Share" id="tags" value="{{res.symbol}}">
+    <input type="submit" value="Submit">
+    <br>
+
+</form>
+<form action="/orderplace/" method="post" style="width: -webkit-fill-available;">
+    {% csrf_token %}
+    <br>
+    <label for="ttype">Choose transaction type:</label>
+    <select id="ttype" name="ttype">
+        <option value="BUY">Buy</option>
+        <option value="SELL">Sell</option>
+    </select>
+    <br>
+    <br>
+    <input id="limitvalue" type="text" name="limitvalue" PLACEHOLDER="Quantity = {{res.lotsize}}" value="">
+    <br>
+    <br>
+    <input type="hidden" id="token" name="token" value="{{res.token}}">
+    <input type="hidden" id="lotsize" name="lotsize" value="{{res.lotsize}}">
+    <input type="hidden" id="symbol" name="symbol" value="{{res.symbol}}">
+    <input type="hidden" id="exch_seg" name="exch_seg" value="{{res.exch_seg}}">
+    <input type="hidden" id="name" name="name" value="{{res.name}}">
+    <br>
+    <br>
+    <input type="radio" id="html" name="fav_language" value="amount">
+    <label for="html">Amount</label>
+    <input type="radio" id="css" name="fav_language" value="number">
+    <label for="css">Number</label>
+    <br>
+    <br>
+    <input id="amount" type="text" placeholder="amount/number" name="amount" value="">
+    <br>
+    <br>
+    <input id="profit" type="text" placeholder="profit" name="profit" value="">
+    <br>
+    <br>
+    <input id="stoploss" type="text" placeholder="Stop Loss" name="stoploss" value="">
+    <br>
+    <br>
+    <input type="submit" value="Submit">
+    <br>
+    <br>
+</form>
+
+
+{% endblock content %}
