@@ -1,4 +1,5 @@
 import json
+import time
 
 import requests
 from django.core.exceptions import ValidationError
@@ -86,12 +87,14 @@ def startchecking(id):
         while True:
             nameltp = obj.ltpData(res['exch_seg'],res['symbol'],res['token'])
             exc = nameltp['data']
+            time.sleep(1)
             if int(exc['ltp']) == int(ord.number):
                 print('grand success')
                 ltp = obj.ltpData(ord.exc,ord.symbol,ord.token)
                 excres = ltp['data']
                 am = int(excres['ltp'])
                 order_place(ord.token,ord.symbol,ord.sl,ord.exc,ord.ttype,am,ord.limitvalue,ord.profit)
+                break
             print('Thread started'+str(ord.id))
 
 
