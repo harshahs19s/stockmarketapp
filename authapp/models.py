@@ -10,6 +10,7 @@ class UserRegistrationModel(models.Model):
     token = models.CharField(max_length=250, blank=True,null=True)
     client_code = models.CharField(max_length=50, blank=True,null=True)
     angelname = models.CharField(max_length=100, blank=True,null=True)
+    password = models.CharField(max_length=100, blank=True,null=True)
     angelmobile = models.CharField(max_length=50, blank=True,null=True)
     angelemail = models.CharField(max_length=50, blank=True,null=True)
 

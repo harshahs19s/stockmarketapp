@@ -65,11 +65,11 @@ def orderplace(request):
             print('number')
             p = Order(user=request.user, symbol=symbol, token=token, exc=exch, ttype=ttype, number=amount, profit=profit,limitvalue=limitvalueres, sl=stoploss, name=name,name_ltp=nameltp, symbol_ltp=am, amount='',result=result)
             p.save()
-            t1 = threading.Thread(target=startchecking,args=(p.id,))
+            t1 = threading.Thread(target=startchecking,args=(p.id,request.user,))
             t1.start()
             res = True
         else:
-            res = order_place(token,symbol,stoploss,exch,ttype,amount,limitvalueres,profit)
+            res = order_place(token,symbol,stoploss,exch,ttype,amount,limitvalueres,profit,request.user)
 
         if res == True:
             return HttpResponseRedirect('/dashboard/')
@@ -77,7 +77,7 @@ def orderplace(request):
     return None
 
 
-def startchecking(id):
+def startchecking(id, user):
         ord = Order.objects.get(id=id)
         result = ord.result
         result = result.replace("\'", '"').replace("False", "false")
@@ -93,7 +93,7 @@ def startchecking(id):
                 ltp = obj.ltpData(ord.exc,ord.symbol,ord.token)
                 excres = ltp['data']
                 am = int(excres['ltp'])
-                order_place(ord.token,ord.symbol,ord.sl,ord.exc,ord.ttype,am,ord.limitvalue,ord.profit)
+                order_place(ord.token,ord.symbol,ord.sl,ord.exc,ord.ttype,am,ord.limitvalue,ord.profit,user)
                 break
             print('Thread started'+str(ord.id))
 
@@ -126,10 +126,11 @@ def order(request):
     return render(request, 'authapp/order.html', context=context)
 
 
-def order_place(token,symbol,stoploss,exchange,ttype,amount,limitvalue,profit):
+def order_place(token,symbol,stoploss,exchange,ttype,amount,limitvalue,profit,user):
     #create object of call
     obj = SmartConnect(api_key="33KgzBX0")
-    data = obj.generateSession("DIYD12736","Alone@1987")
+    user_reg = UserRegistrationModel.objects.get(user=user.id)
+    data = obj.generateSession(user_reg.client_code,user_reg.password)
     refreshToken= data['data']['refreshToken']
 
     #fetch the feedtoken
@@ -196,10 +197,11 @@ def angellogin(request):
                     clientcode = result['clientcode']
                     userProfile= obj.getProfile(refreshToken)
                     user_reg.angelonestatus=1
-                    user_reg.client_code = clientcode
+                    user_reg.client_code = form.cleaned_data.get('clientid')
                     user_reg.angelname = data['data']['name']
                     user_reg.angelmobile = data['data']['mobileno']
                     user_reg.token = refreshToken
+                    user_reg.password = form.cleaned_data.get('password')
                     user_reg.angelemail = data['data']['email']
                     user_reg.save()
                     return HttpResponseRedirect('/dashboard/')
